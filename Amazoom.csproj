@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>aspnet-Amazoom-C00097B7-6318-4557-A5F2-A0F447C536F3</UserSecretsId>
+    <StartupObject>Amazoom.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+    <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
+    <None Remove="Addtocartlogic\" />
+    <None Remove="Authorizationlogic\" />
+    <None Remove="images\" />
+    <None Remove="Migrations\" />
+    <None Remove="Backend models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.19" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.19" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.19" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.19" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.19" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.20" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Addtocartlogic\" />
+    <Folder Include="Authorizationlogic\" />
+    <Folder Include="wwwroot\Images\" />
+    <Folder Include="images\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Backend models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Addtocartlogic\ShoppingCart.cs" />
+    <Compile Remove="warehouse_operations.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\Images\warehouse2.png" />
+    <Content Remove="wwwroot\Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\Images\warehouse2.png" />
+  </ItemGroup>
+</Project>

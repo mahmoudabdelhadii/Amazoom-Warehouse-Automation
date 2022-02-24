@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+<style>
+    .box1 {
+        font-family: 'Roboto', sans-serif;
+        font-size: 25px;
+        color: white;
+        background-image: url('@Url.Content("~/Images/shopping.png")');
+        height: 250px;
+        width: 1000px;
+        border: 2px solid black;
+        padding: 10px;
+        margin: auto;
+    }
+        .box2 {
+        font-family: 'Roboto', sans-serif;
+        font-size: 25px;
+        color: white;
+        background-image: url('@Url.Content("~/Images/warehouse2.png")');
+        height: 250px;
+        width: 1000px;
+        border: 2px solid black;
+        padding: 10px;
+        margin: auto;
+    }
+    body {
+        background-color: white;
+    }
+</style>
+<div class="text-center box1">
+    <h1 class="display-4" style="background-color: #000000">Customers:</h1>
+    <p><a asp-area="" asp-controller="Item" asp-action="Index">  <input type="button" value="Shop Here" /></a></p>
+</div>
+<div class="text-center box2">
+    <h1 class="display-4" style="background-color: #000000">Admins:</h1>
+    <p><a asp-area="" asp-controller="Warehouse" asp-action="Index">  <input type="button" value="Manage Here" /></a></p>
+</div>

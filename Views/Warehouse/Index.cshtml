@@ -1,0 +1,48 @@
+@model IEnumerable<Amazoom.Models.Warehouse>
+
+@{ ViewData["Title"] = "Warehouse Management"; }
+
+<h1>Admin Management</h1>
+<p>
+    <a asp-action="ItemStock"><input type="button" value="View Total Items / Order More" /></a>
+</p>
+<p>
+    <a asp-action="Create"><input type="button" value="Create New Warehouse" /></a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <p>Warehouse ID</p>
+            </th>
+            <th>
+                <p>Columns</p>
+            </th>
+            <th>
+                <p>Rows</p>
+            </th>
+            <th>
+                <p>Shelves</p>
+            </th>
+            <th>
+                <p>Max Shelf Weight</p>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var warehouse in Model)
+        {
+<tr>
+    <td>@warehouse.ID</td>
+    <td>@warehouse.ColumnNumber</td>
+    <td>@warehouse.RowNumber</td>
+    <td>@warehouse.ShelfSize</td>
+    <td>@warehouse.ShelfMaxWeight</td>
+    <td>
+        <a asp-action="Details" asp-route-id="@warehouse.ID">View Stored Items</a>
+    </td>
+</tr>}
+    </tbody>
+</table>

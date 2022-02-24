@@ -1,0 +1,46 @@
+@model IEnumerable<Amazoom.Models.Item>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>View Items for purchase</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <p>Item Name</p>
+            </th>
+            <th>
+                <p>In Stock</p>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@using System.Linq
+@{  var Query = Model.GroupBy(
+                         (item => item.Name),
+                         (key, elements) => new
+                         {
+                             key = key,
+                             count = elements.Distinct().Count()
+                         }
+                         ); ;}
+        @foreach (var item in Query)
+        {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.key)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.count)
+        </td>
+        <td>
+            @{ var cartadd = Model.Where(m => m.Name == item.key).FirstOrDefault(); }
+            <a asp-controller="Item" asp-action="CartAdd" asp-route-id="@cartadd.ID">Add to Cart</a>
+        </td>
+    </tr>}
+    </tbody>
+</table>

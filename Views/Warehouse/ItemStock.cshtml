@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Amazoom.Models.Item>
+
+@{ ViewData["Title"] = "Index"; }
+
+<h1>Inventory Management</h1>
+@using System.Linq
+@{ var Query = Model.GroupBy(
+                          (item => item.Name),
+                          (key, elements) => new
+                          {
+                              key = key,
+                              count = elements.Distinct().Count()
+                          }
+                          ); ;}
+@{ var lowstock = from items in Query
+                   where items.count < 5
+                   select items;
+}
+@foreach (var item in lowstock)
+{
+    <p style="color:red;"> @item.key is low in stock!</p>
+}
+<p><a asp-area="" asp-controller="Item" asp-action="Create">  <input type="button" value="Order More/Add New Item" /></a></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <p>Item Name</p>
+            </th>
+            <th>
+                <p>In Stock</p>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Query)
+        {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.key)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.count)
+    </td>
+</tr>}
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Index">Back to Warehouse Management</a>
+</div>
