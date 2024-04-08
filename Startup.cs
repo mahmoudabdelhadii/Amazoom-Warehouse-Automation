@@ -86,7 +86,7 @@ namespace Amazoom
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                
+                 
             }
             else
             {

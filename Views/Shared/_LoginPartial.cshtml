@@ -3,36 +3,80 @@
 @inject UserManager<IdentityUser> UserManager
 
 
-<ul class="navbar-nav">
+        <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-between" style="background-color: #131921; height:60px;">
+    <div class="container">
+        <!-- Brand/logo -->
+        <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/Images/amazoom-bg.png" style="width: 100px; height:50px;"/></a>
+        
+        <!-- Toggler/collapsible Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarResponsive">
+            
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+                
+                <li class="nav-item">
+                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">About Us</a>
+                </li>
+            </ul>
+            <!-- Search form -->
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn" style="background-color: #febd69;" type="submit">
+                    <img src="~/Images/search.svg" />
+                    </button>
+            </form>
+            <!-- Account links or Login Partial -->
+            <!-- Placeholder for Account or Auth links, adapt as necessary -->
+            <ul class="navbar-nav d-flex justify-content-center align-items-center">
+                <li class="nav-item">
+                   <a class="nav-link text-light" href="#">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-            <form class="form-inline" asp-area="" asp-controller="Item" asp-action="Cart"> 
-                <button type="submit" class="nav-link btn btn-link text-dark">View Cart</button>
+        
+
+        <div class="dropdown">
+  <button class="btn btn-secondary d-flex justify-content-center align-items-center dropdown-toggle"style="background-color: #131921;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+     <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name.Substring(0, User.Identity.Name.IndexOf("@"))!</a>
+  </button>
+  <div class="dropdown-menu" style="background-color: #131921;" aria-labelledby="dropdownMenuButton">
+    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-link text-white">Logout</button>
             </form>
+  </div>
+</div>
 
-        </li>
-
-
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
-        </li>
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-            </form>
-        </li>
+ <form class="form-inline" asp-area="" asp-controller="Item" asp-action="Cart"> 
+                <button type="submit" class="nav-link btn btn-link text-dark"><img src="~/Images/cart3.svg" style="filter: invert(1);"/></button>
+ </form>
+        
 
     }
 
     else
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle"style="background-color: #131921;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Account
+  </button>
+  <div class="dropdown-menu" style="background-color: #131921;" aria-labelledby="dropdownMenuButton">
+     <a class="dropdown-item btn btn-link text-white" style="background-color: #131921;" asp-area="Identity" asp-page="/Account/Register">Register</a>
+   <a class="dropdown-item btn btn-link text-white" style="background-color: #131921;" asp-area="Identity" asp-page="/Account/Login">Login</a>
+  </div>
+</div>
+
+
+        @* <li class="nav-item">
+          
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
+            
+        </li> *@
         //Current logins are:
         //Username: admin@admin.com
         //Amazoom123!
@@ -42,3 +86,15 @@
         //Password: !1Shopping!
     }
 </ul>
+                    
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+

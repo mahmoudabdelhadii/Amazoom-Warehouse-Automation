@@ -2,6 +2,7 @@
     ViewData["Title"] = "Home Page";
 }
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
 <style>
     .box1 {
         font-family: 'Roboto', sans-serif;
@@ -28,8 +29,15 @@
     body {
         background-color: white;
     }
+
+    Nav {
+        width: 100%;
+        height: 10rem;
+        color: black;
+    }
 </style>
 <div class="text-center box1">
+   
     <h1 class="display-4" style="background-color: #000000">Customers:</h1>
     <p><a asp-area="" asp-controller="Item" asp-action="Index">  <input type="button" value="Shop Here" /></a></p>
 </div>
