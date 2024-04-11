@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-
+@model IEnumerable<Amazoom.Models.Item>
 
         <nav class="navbar navbar-expand-lg navbar-light d-flex justify-content-between" style="background-color: #131921; height:60px;">
     <div class="container">
@@ -22,10 +22,11 @@
                 </li>
             </ul>
             <!-- Search form -->
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn" style="background-color: #febd69;" type="submit">
-                    <img src="~/Images/search.svg" />
+            <form class="d-flex" asp-controller="Home" asp-action="Index" role="search" method="get">
+                <input class="form-control me-2" type="text" name="SearchString" placeholder="Search" value="@ViewData["CurrentFilter"]" aria-label="Search">
+               
+                <button class="btn" style="background-color: #febd69;" type="submit" value="Filter">
+                    <img src="~/Images/search.svg" alt="search" />
                     </button>
             </form>
             <!-- Account links or Login Partial -->
@@ -52,7 +53,7 @@
 </div>
 
  <form class="form-inline" asp-area="" asp-controller="Item" asp-action="Cart"> 
-                <button type="submit" class="nav-link btn btn-link text-dark"><img src="~/Images/cart3.svg" style="filter: invert(1);"/></button>
+                <button type="submit" class="nav-link btn btn-link text-dark"><img src="~/Images/cart3.svg" style="filter: invert(1);"/> </button>
  </form>
         
 

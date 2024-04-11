@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazoom.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Amazoom.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Amazoom.Controllers
 {
@@ -15,18 +17,44 @@ namespace Amazoom.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDbContext _context;
+
+
+        public HomeController(ApplicationDbContext context,ILogger<HomeController> logger)
         {
+            _context = context;
             _logger = logger;
         }
 
-        public IActionResult Index()
+       
+
+        [AllowAnonymous]
+        // GET: Item
+        public async Task<IActionResult> Index( string searchString)
         {
-            
-            return View();
+            ViewData["CurrentFilter"] = searchString;
+            if (_context.Item == null)
+            {
+                return Problem("Entity set 'MvcMovieContext.Movie'  is null.");
+            }
 
+            var items = from m in _context.Item
+                select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                items = items.Where(s => s.Name!.Contains(searchString));
+            }
+
+            return View(await items.Where(s => s.InCart==false).ToListAsync());
         }
-
+        
+        [HttpPost]
+        public string Index(string searchString, bool notUsed)
+        {
+            return "From [HttpPost]Index: filter on " + searchString;
+        }
+        
         public IActionResult Privacy()
         {
             return View();

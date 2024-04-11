@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Amazoom.Data;
+using Amazoom.Models;
 using Microsoft.AspNetCore.Authorization;
 using Manager.Authorization;
 
-namespace Amazoom.Models
+namespace Amazoom.Controllers
 {
     [Authorize(Policy = "admin")]
     public class WarehouseController : Controller

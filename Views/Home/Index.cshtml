@@ -1,8 +1,23 @@
-﻿@{
+﻿@model IEnumerable<Amazoom.Models.Item>
+@{
     ViewData["Title"] = "Home Page";
+    
 }
-<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
+@using System.Linq
+    @{  var Query = Model.GroupBy(
+            (item => item.Name),
+            (key, elements) => new
+            {
+                key = key,
+                count = elements.Distinct().Count()
+            }
+        ); ;}
+  
+    
+   
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+<link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 <style>
     .box1 {
         font-family: 'Roboto', sans-serif;
@@ -35,13 +50,49 @@
         height: 10rem;
         color: black;
     }
-</style>
-<div class="text-center box1">
+    .cardss {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 15rem;
+    height: 20rem;
+    border: 2px solid #1b1e21;
+    border-radius: 1rem;
+    align-items: center;
+   }
+   .containers{
+   margin-top: 5rem;
+   display: flex;
+   width: 100%;
+   gap: 3rem;
    
-    <h1 class="display-4" style="background-color: #000000">Customers:</h1>
-    <p><a asp-area="" asp-controller="Item" asp-action="Index">  <input type="button" value="Shop Here" /></a></p>
-</div>
-<div class="text-center box2">
-    <h1 class="display-4" style="background-color: #000000">Admins:</h1>
-    <p><a asp-area="" asp-controller="Warehouse" asp-action="Index">  <input type="button" value="Manage Here" /></a></p>
+   }
+   .images{
+   width: 8rem;
+   height: 8rem;
+   }
+   .details{
+   display:flex;
+   flex-direction: column;
+   width: 70%;
+   }
+</style>
+
+<div class="containers">
+    @foreach (var item in Query)
+    {
+        <div class="cardss">
+            <div class="images">
+            </div>
+            <div class="details">
+                <p>@Html.DisplayFor(modelItem => item.key)</p>
+
+
+                <p>Left in stock: @Html.DisplayFor(modelItem => item.count)</p>
+
+                @{ var cartadd = Model.Where(m => m.Name == item.key).FirstOrDefault(); }
+                <a asp-controller="Item" asp-action="CartAdd" asp-route-id="@cartadd.ID">Add to Cart </a>
+            </div>
+        </div>
+    }
 </div>

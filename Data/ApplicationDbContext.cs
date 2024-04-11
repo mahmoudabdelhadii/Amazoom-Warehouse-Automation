@@ -17,5 +17,6 @@ namespace Amazoom.Data
         public DbSet<Item> Item { get; set; }
         public DbSet<Warehouse> Warehouse { get; set; }
         public DbSet<Truck> Truck { get; set; }
+        
     }
 }

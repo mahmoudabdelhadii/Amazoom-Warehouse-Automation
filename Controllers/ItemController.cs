@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Session;
+
 using Microsoft.EntityFrameworkCore;
 using Amazoom.Data;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using System.Threading;
 
-namespace Amazoom.Models
+using Amazoom.Models;
+
+namespace Amazoom.Controllers
 {
     public class ItemController : Controller
     {
@@ -24,12 +22,24 @@ namespace Amazoom.Models
             _context = context;
         }
 
-
+        [AllowAnonymous]
         // GET: Item
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
+            if (_context.Item == null)
+            {
+                return Problem("Entity set '_context.Item'  is null.");
+            }
 
-            return View(await _context.Item.Where(s => s.InCart == false).ToListAsync());
+            var items = from m in _context.Item
+                select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                items = items.Where(s => s.Name!.Contains(searchString));
+            }
+
+            return View(await items.Where(s => s.InCart==false).ToListAsync());
         }
 
         // GET: Item
@@ -40,9 +50,9 @@ namespace Amazoom.Models
                 .FirstOrDefaultAsync(m => m.ID == id);
             item.InCart = true;
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Home");
         }
-
+        
         // GET: Item
         public async Task<IActionResult> CartRemove(int? id)
         {
@@ -53,58 +63,84 @@ namespace Amazoom.Models
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Cart));
         }
-
-        public async Task<IActionResult> Order(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var item = await _context.Item
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return View(item);
-        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Order(int id)
+        public ActionResult Order()
         {
-            Item item = _context.Item.Find(id);
-            Warehouse warehouse = _context.Warehouse.Find(item.WarehouseStored);
-            Truck truck = _context.Truck.Where(s => s.Docked == true).Where(a => a.WarehouseStored == item.WarehouseStored).Where(a => (item.Weight + a.current_weight) < a.total_weight).FirstOrDefault();
-            Truck truck1 = _context.Truck.Where(s => s.Docked == false).FirstOrDefault();
-            if (truck == null)
+            foreach (Item item in _context.Item.Where(s => s.InCart == true))
             {
-                return RedirectToAction("Error", "Shared", new { area = "" });
-            }
-            Console.WriteLine("{0} will be put in Truck {1} from Warehouse {2}", item.Name, truck.ID, truck.WarehouseStored);
-            truck.current_weight = truck.current_weight + item.Weight;
-            Console.WriteLine("Truck {0} weight: {1} ", truck.ID, truck.current_weight);
-            Warehousecomp.Pickupitem(item, warehouse, truck);
-            if (truck.current_weight >= 0.75 * truck.total_weight)
-            {
-                Console.WriteLine("Truck {0} full, leaving bay when robot delivers ", truck.ID);
-                truck.Docked = false;
-                truck.current_weight = 0;
-            }
-            _context.Item.Remove(item);
-            if (truck1 == null)
-            {
-            }
-            else
-            {
-                Console.WriteLine("Truck {0} has returned from delivery", truck1.ID);
-                truck1.Docked = true;
-            }
-           _context.SaveChanges();
+                Warehouse warehouse = _context.Warehouse.Find(item.WarehouseStored);
+                Truck truck2 = _context.Truck.FirstOrDefault(s => (s.Docked == true));
+                Truck truck = _context.Truck.FirstOrDefault(s => (s.Docked == true) & (s.WarehouseStored == item.WarehouseStored)) ;
+                Truck truck1 = _context.Truck.FirstOrDefault(s => s.Docked == false);
+                if (truck == null)
+                {
+                    return RedirectToAction("Error", "Shared", new { area = "" });
+                }
 
-           return RedirectToAction(nameof(Cart));
+                Console.WriteLine("{0} will be put in Truck {1} from Warehouse {2}", item.Name, truck.ID,
+                    truck.WarehouseStored);
+                truck.current_weight += item.Weight;
+                Console.WriteLine("Truck {0} weight: {1} ", truck.ID, truck.current_weight);
+                Warehousecomp.Pickupitem(item, warehouse, truck);
+                if (truck.current_weight >= 0.75 * truck.total_weight)
+                {
+                    Console.WriteLine("Truck {0} full, leaving bay when robot delivers ", truck.ID);
+                    truck.Docked = false;
+                    truck.current_weight = 0;
+                }
+
+                _context.Item.Remove(item);
+                if (truck1 == null)
+                {
+                }
+                else
+                {
+                    Console.WriteLine("Truck {0} has returned from delivery", truck1.ID);
+                    truck1.Docked = true;
+                }
+            }
+
+            _context.SaveChanges();
+        
+            return RedirectToAction(nameof(Cart));
         }
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public ActionResult Order(int id)
+        // {
+        //     
+        //     Item item = _context.Item.Find(id);
+        //     Warehouse warehouse = _context.Warehouse.Find(item.WarehouseStored);
+        //     Truck truck = _context.Truck.Where(s => s.Docked == true).Where(a => a.WarehouseStored == item.WarehouseStored).Where(a => (item.Weight + a.current_weight) < a.total_weight).FirstOrDefault();
+        //     Truck truck1 = _context.Truck.Where(s => s.Docked == false).FirstOrDefault();
+        //     if (truck == null)
+        //     {
+        //         return RedirectToAction("Error", "Shared", new { area = "" });
+        //     }
+        //     Console.WriteLine("{0} will be put in Truck {1} from Warehouse {2}", item.Name, truck.ID, truck.WarehouseStored);
+        //     truck.current_weight += item.Weight;
+        //     Console.WriteLine("Truck {0} weight: {1} ", truck.ID, truck.current_weight);
+        //     Warehousecomp.Pickupitem(item, warehouse, truck);
+        //     if (truck.current_weight >= 0.75 * truck.total_weight)
+        //     {
+        //         Console.WriteLine("Truck {0} full, leaving bay when robot delivers ", truck.ID);
+        //         truck.Docked = false;
+        //         truck.current_weight = 0;
+        //     }
+        //     _context.Item.Remove(item);
+        //     if (truck1 == null)
+        //     {
+        //     }
+        //     else
+        //     {
+        //         Console.WriteLine("Truck {0} has returned from delivery", truck1.ID);
+        //         truck1.Docked = true;
+        //     }
+        //     _context.SaveChanges();
+        //
+        //     return RedirectToAction(nameof(Cart));
+        // }
 
         public async Task<IActionResult> Cart()
         {
@@ -148,8 +184,7 @@ namespace Amazoom.Models
             {
                 int QuantityInt = Convert.ToInt32(Quantity);
                 var warehousetoplace = _context.Warehouse
-                                           .Where(s => s.ID == item.WarehouseStored)
-                                           .FirstOrDefault();
+                    .FirstOrDefault(s => s.ID == item.WarehouseStored);
                 for (int i = 0;i < QuantityInt; i++)
                 {
                  Item newitem = item;
